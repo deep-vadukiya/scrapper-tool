@@ -6,7 +6,10 @@ import { Link } from "react-router-dom";
 // routes
 import { APP_PAGES } from "../../routes/paths";
 // indexDB
-import { updateIndexDBRecord } from "../../indexDB/utilityFunc";
+import {
+  getAllIndexDBRecords,
+  updateIndexDBRecord,
+} from "../../indexDB/utilityFunc";
 import { INDEX_DB_CONFIG } from "../../indexDB/configDB";
 
 // ----------------------------------------------
@@ -15,7 +18,7 @@ export default function CopyCollection() {
   const handlePasteRecords = async () => {
     try {
       const copiedText = await navigator.clipboard.readText();
-      const parsedCopiedData = JSON.parse(copiedText);
+      const parsedCopiedData = JSON?.parse(copiedText);
 
       if (parsedCopiedData) {
         // API specific condition ...
@@ -23,13 +26,21 @@ export default function CopyCollection() {
           if (parsedCopiedData?.result?.length) {
             const tempData = [];
 
+            const storedIndexDBData = await getAllIndexDBRecords(
+              INDEX_DB_CONFIG.leadEnquiries.storeObject
+            );
+            const storedIndexDBDataLength = storedIndexDBData.length ?? 0;
+
             for (
               let index = 0;
               index < parsedCopiedData.result.length;
               index++
             ) {
               const element = parsedCopiedData.result[index];
-              tempData.push({ ...element, id: index });
+              tempData.push({
+                ...element,
+                id: storedIndexDBDataLength + index + 1,
+              });
             }
 
             updateIndexDBRecord(
