@@ -1,13 +1,14 @@
 //
 
 import React from "react";
+import Router from "../routes";
 
 // ----------------------------------------------
 
 function App() {
   return (
     <React.Fragment>
-      <p>hello world ...</p>
+      <Router />
     </React.Fragment>
   );
 }
