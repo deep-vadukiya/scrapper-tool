@@ -4,6 +4,7 @@ import { openDatabase } from "./configDB";
 
 // ----------------------------------------------
 
+// 1. add records to indexDB
 export async function addIndexDBRecord(dbKey, record) {
   try {
     const db = await openDatabase();
@@ -17,6 +18,7 @@ export async function addIndexDBRecord(dbKey, record) {
   }
 }
 
+// 2. update records to indexDB
 export async function updateIndexDBRecord(dbKey, records) {
   try {
     const db = await openDatabase();
@@ -29,18 +31,13 @@ export async function updateIndexDBRecord(dbKey, records) {
       store.put(record);
     });
 
-    if (window.navigator.onLine) {
-      const sync = db.transaction("syncReport", "readwrite");
-      const syncObj = sync.objectStore("syncReport");
-      await syncObj.put(new Date().toString(), dbKey);
-    }
-
     await tx.done;
   } catch (error) {
     console.error(error);
   }
 }
 
+// 3. get all records from indexDB
 export async function getAllIndexDBRecords(dbKey) {
   let allRec = null;
 
