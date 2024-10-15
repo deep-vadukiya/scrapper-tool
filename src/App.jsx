@@ -1,14 +1,14 @@
 //
 
+import React from "react";
+
 // ----------------------------------------------
 
 function App() {
   return (
-    <>
-      <div>
-        <p>hello world ...</p>
-      </div>
-    </>
+    <React.Fragment>
+      <p>hello world ...</p>
+    </React.Fragment>
   );
 }
 
