@@ -7,6 +7,16 @@ import { openDB } from "idb";
 const DB_NAME = "scrapper-data";
 const DB_VERSION = 1;
 
+export const INDEX_DB_CONFIG = {
+  leadEnquiries: {
+    storeObject: "leadEnquiries",
+    keyPath: "id",
+    hasIndex: false,
+  },
+};
+
+// ----------------------------------------------
+
 // initiate the database for new devices ...
 export async function openDatabase() {
   const indexDB = await openDB(DB_NAME, DB_VERSION, {

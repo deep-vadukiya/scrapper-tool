@@ -6,7 +6,11 @@ import { Link } from "react-router-dom";
 // routes
 import { APP_PAGES } from "../../routes/paths";
 // indexDB
-import { updateIndexDBRecord } from "../../indexDB/utilityFunc";
+import {
+  getAllIndexDBRecords,
+  updateIndexDBRecord,
+} from "../../indexDB/utilityFunc";
+import { INDEX_DB_CONFIG } from "../../indexDB/configDB";
 
 // ----------------------------------------------
 
@@ -14,17 +18,36 @@ export default function CopyCollection() {
   const handlePasteRecords = async () => {
     try {
       const copiedText = await navigator.clipboard.readText();
+      const parsedCopiedData = JSON?.parse(copiedText);
 
-      // API specific condition ...
-      if (copiedText?.code === 200) {
-        if (copiedText?.result?.length) {
-          const tempData = [];
+      if (parsedCopiedData) {
+        // API specific condition ...
+        if (parsedCopiedData?.code === 200) {
+          if (parsedCopiedData?.result?.length) {
+            const tempData = [];
 
-          for (let index = 0; index < copiedText.result.length; index++) {
-            const element = array[index];
-            tempData.push({ element, id: index });
+            const storedIndexDBData = await getAllIndexDBRecords(
+              INDEX_DB_CONFIG.leadEnquiries.storeObject
+            );
+            const storedIndexDBDataLength = storedIndexDBData.length ?? 0;
+
+            for (
+              let index = 0;
+              index < parsedCopiedData.result.length;
+              index++
+            ) {
+              const element = parsedCopiedData.result[index];
+              tempData.push({
+                ...element,
+                id: storedIndexDBDataLength + index + 1,
+              });
+            }
+
+            updateIndexDBRecord(
+              INDEX_DB_CONFIG.leadEnquiries.storeObject,
+              tempData
+            );
           }
-          updateIndexDBRecord(tempData);
         }
       }
     } catch (err) {
