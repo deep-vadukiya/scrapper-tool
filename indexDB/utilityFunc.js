@@ -54,3 +54,17 @@ export async function getAllIndexDBRecords(dbKey) {
 
   return allRec;
 }
+
+// 4. delete records from indexDB with record ID
+export async function deleteIndexDBRecord(dbKey, recordId) {
+  try {
+    const db = await openDatabase();
+    const tx = db.transaction(dbKey, "readwrite");
+    const store = tx.objectStore(dbKey);
+    await store.delete(recordId);
+
+    await tx.done;
+  } catch (error) {
+    console.error(error);
+  }
+}
