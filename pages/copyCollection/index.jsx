@@ -11,6 +11,8 @@ import {
   updateIndexDBRecord,
 } from "../../indexDB/utilityFunc";
 import { INDEX_DB_CONFIG } from "../../indexDB/configDB";
+// component
+import ExcelExport from "../../components/ExcelExport";
 
 // ----------------------------------------------
 
@@ -191,6 +193,8 @@ export default function CopyCollection() {
         {/* database analytics section */}
         <div></div>
       </div>
+
+      <ExcelExport />
     </React.Fragment>
   );
 }
