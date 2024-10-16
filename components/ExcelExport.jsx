@@ -17,6 +17,8 @@ export default function ExcelExport() {
   };
 
   const exportToExcel = async () => {
+    const recordsPerSheet = 2000;
+
     const today = new Date();
     const yyyy = today.getFullYear();
     let mm = today.getMonth() + 1; // Months start at 0!
@@ -54,11 +56,25 @@ export default function ExcelExport() {
       excelData.push(data);
     }
 
-    // Convert the data array to a worksheet
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
     // Create a new workbook and add the worksheet
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Lead Enquiries");
+
+    const numSheets = Math.ceil(excelData.length / recordsPerSheet) ?? 1;
+
+    for (let i = 0; i < numSheets; i++) {
+      // Slice data for the current sheet
+      const startIdx = i * recordsPerSheet;
+      const endIdx = startIdx + recordsPerSheet;
+      const sheetData = excelData?.slice(startIdx, endIdx);
+
+      // Convert the sliced data to a worksheet
+      const worksheet = XLSX.utils.json_to_sheet(sheetData);
+
+      // Add the worksheet to the workbook with a name like "Sheet1", "Sheet2", etc.
+      const sheetName = `LeadEnquiry_${i + 1}`;
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    }
+
     // Export the workbook to an Excel file
     XLSX.writeFile(workbook, fileName);
   };
