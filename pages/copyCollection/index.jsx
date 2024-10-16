@@ -107,8 +107,25 @@ export default function CopyCollection() {
     }
   };
 
-  const handleCopyNextAPIPayload = () => {
-    //
+  const handleCopyNextAPIPayload = async () => {
+    const storedIndexDBData = await getAllIndexDBRecords(
+      INDEX_DB_CONFIG.leadEnquiries.storeObject
+    );
+
+    const copiablePayload = JSON.stringify({
+      start: pagination.start,
+      end: pagination.end,
+      type: 0,
+      last_contact_date:
+        storedIndexDBData[storedIndexDBData.length - 1]?.last_contact_date,
+    });
+
+    try {
+      await navigator.clipboard.writeText(copiablePayload);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      setError("Something is wrong while copying text ...!!!");
+    }
   };
 
   return (
