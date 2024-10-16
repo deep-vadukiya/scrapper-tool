@@ -64,11 +64,14 @@ export default function CopyCollection() {
             );
             const storedIndexDBDataLength = storedIndexDBData.length ?? 0;
 
+            const isAlreadyExitRecord = storedIndexDBData.findIndex(
+              (el) =>
+                el.contacts_add_date ===
+                parsedCopiedData?.result[0].contacts_add_date
+            );
+
             // check whether same payload is not pasting another time ...
-            if (
-              storedIndexDBData[0]?.contacts_add_date !==
-              parsedCopiedData.result[0]?.contacts_add_date
-            ) {
+            if (isAlreadyExitRecord === -1) {
               for (
                 let index = 0;
                 index < parsedCopiedData.result.length;
