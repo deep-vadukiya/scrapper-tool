@@ -1,6 +1,6 @@
 //
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 // libs
 import { Link } from "react-router-dom";
 // routes
@@ -15,8 +15,39 @@ import { INDEX_DB_CONFIG } from "../../indexDB/configDB";
 // ----------------------------------------------
 
 export default function CopyCollection() {
+  const retrivableRecordOnEachAPI = 100;
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [lastRecordContactDate, setLastRecordContactDate] = useState(null);
+  const [pagination, setPagination] = useState({ start: 0, end: 100 });
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const setInitials = async () => {
+      const storedIndexDBData = await getAllIndexDBRecords(
+        INDEX_DB_CONFIG.leadEnquiries.storeObject
+      );
+
+      if (storedIndexDBData?.length) {
+        setTotalRecords(storedIndexDBData.length);
+        setLastRecordContactDate(
+          storedIndexDBData[storedIndexDBData.length - 1]?.last_contact_date ??
+            null
+        );
+        setPagination({
+          start: storedIndexDBData.length + 1,
+          end: storedIndexDBData.length + 100,
+        });
+      }
+    };
+
+    // set initials
+    setInitials();
+  }, []);
+
   const handlePasteRecords = async () => {
     try {
+      setError(null);
+
       const copiedText = await navigator.clipboard.readText();
       const parsedCopiedData = JSON?.parse(copiedText);
 
@@ -31,27 +62,69 @@ export default function CopyCollection() {
             );
             const storedIndexDBDataLength = storedIndexDBData.length ?? 0;
 
-            for (
-              let index = 0;
-              index < parsedCopiedData.result.length;
-              index++
+            // check whether same payload is not pasting another time ...
+            if (
+              storedIndexDBData[0]?.contacts_add_date !==
+              parsedCopiedData.result[0]?.contacts_add_date
             ) {
-              const element = parsedCopiedData.result[index];
-              tempData.push({
-                ...element,
-                id: storedIndexDBDataLength + index + 1,
-              });
-            }
+              for (
+                let index = 0;
+                index < parsedCopiedData.result.length;
+                index++
+              ) {
+                const element = parsedCopiedData.result[index];
+                tempData.push({
+                  ...element,
+                  id: storedIndexDBDataLength + index + 1,
+                });
+              }
 
-            updateIndexDBRecord(
-              INDEX_DB_CONFIG.leadEnquiries.storeObject,
-              tempData
-            );
+              await updateIndexDBRecord(
+                INDEX_DB_CONFIG.leadEnquiries.storeObject,
+                tempData
+              );
+
+              const totalStoredRecords =
+                storedIndexDBDataLength + parsedCopiedData.result.length;
+              setTotalRecords(totalStoredRecords ?? 0);
+              setPagination({
+                start: totalStoredRecords + 1,
+                end: totalStoredRecords + retrivableRecordOnEachAPI,
+              });
+            } else {
+              setError(
+                "Payload is already stored to database, try storing new payload ...!"
+              );
+            }
           }
+        } else {
+          setError("Please checl, Payload is not in the correct shape ...!");
         }
       }
     } catch (err) {
+      setError("Somethings wrong with reading clipboard ...!!!");
       console.error("Failed to read clipboard contents: ", err);
+    }
+  };
+
+  const handleCopyNextAPIPayload = async () => {
+    const storedIndexDBData = await getAllIndexDBRecords(
+      INDEX_DB_CONFIG.leadEnquiries.storeObject
+    );
+
+    const copiablePayload = JSON.stringify({
+      start: pagination.start,
+      end: pagination.end,
+      type: 0,
+      last_contact_date:
+        storedIndexDBData[storedIndexDBData.length - 1]?.last_contact_date,
+    });
+
+    try {
+      await navigator.clipboard.writeText(copiablePayload);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      setError("Something is wrong while copying text ...!!!");
     }
   };
 
@@ -82,7 +155,37 @@ export default function CopyCollection() {
             </button>
           </div>
 
-          <div></div>
+          {!!error ? (
+            <div style={{ margin: "16px 0" }}>
+              <div style={{ padding: 16, backgroundColor: "#FF8A8A" }}>
+                <p>{error}</p>
+              </div>
+            </div>
+          ) : null}
+
+          <div>
+            <p>Total stored records: {totalRecords}</p>
+
+            <hr />
+
+            <div
+              style={{
+                padding: 16,
+                marginTop: 12,
+                border: "1px solid #F6F6F6",
+              }}
+            >
+              <p>Upcoming API payload</p>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button onClick={handleCopyNextAPIPayload}>
+                  Copy next payload
+                </button>
+              </div>
+              <p>Last record contact date: {lastRecordContactDate}</p>
+              <p>Record start: {pagination.start}</p>
+              <p>Record end: {pagination.end}</p>
+            </div>
+          </div>
         </div>
 
         {/* database analytics section */}
