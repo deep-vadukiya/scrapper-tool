@@ -46,11 +46,17 @@ export default function ExcelExport() {
 
       const data = {
         ID: element.id,
+        ContactLastProduct: element.contact_last_product,
         ContactName: element.contacts_name,
-        ContactMobile: element.contacts_mobile,
+        ContactMobile: element.contacts_mobile1,
+        ContactsCompany: element.contacts_company,
         City: element.contact_city,
         State: element.contact_state,
         Country: element.country_name,
+        ContactAddedDate: element.contacts_add_date,
+        LastProductQTY: element.last_product_qty,
+        Remark: element.contact_type_remarks,
+        LastMessage: element.last_message,
       };
 
       excelData.push(data);
