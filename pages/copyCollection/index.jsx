@@ -66,8 +66,7 @@ export default function CopyCollection() {
 
             const isAlreadyExitRecord = storedIndexDBData.findIndex(
               (el) =>
-                el.contacts_add_date ===
-                parsedCopiedData?.result[0].contacts_add_date
+                el.bs_encrypt_key === parsedCopiedData?.result[0].bs_encrypt_key
             );
 
             // check whether same payload is not pasting another time ...
@@ -201,3 +200,15 @@ export default function CopyCollection() {
     </React.Fragment>
   );
 }
+
+// Fiber + DTH
+// 599: 40 Mbps
+// OTT services
+// 707 Rs
+
+// Fiber
+// 3000: 6 months
+// 588: 40 Mbps + limited data
+
+// Black
+//
