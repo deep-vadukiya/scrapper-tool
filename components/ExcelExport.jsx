@@ -49,6 +49,7 @@ export default function ExcelExport() {
         ContactLastProduct: element.contact_last_product,
         ContactName: element.contacts_name,
         ContactMobile: element.contacts_mobile1,
+        ContactsCompany: element.contacts_company,
         City: element.contact_city,
         State: element.contact_state,
         Country: element.country_name,
