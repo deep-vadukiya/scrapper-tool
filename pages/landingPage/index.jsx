@@ -18,7 +18,7 @@ export default function LandingPage() {
       </div>
 
       <div style={{ padding: 8 }}>
-        <Link to={APP_PAGES.copyCollection}>Copy Collection</Link>
+        <Link to={APP_PAGES.RESTAPICollector}>Copy Collection</Link>
       </div>
     </React.Fragment>
   );

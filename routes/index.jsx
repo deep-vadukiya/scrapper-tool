@@ -3,7 +3,7 @@
 import { useRoutes } from "react-router-dom";
 // pages
 import LandingPage from "../pages/landingPage/index";
-import CopyCollection from "../pages/copyCollection";
+import RESTAPICollector from "../pages/RESTAPICollector";
 
 // ----------------------------------------------
 
@@ -14,8 +14,8 @@ export default function Router() {
       element: <LandingPage />,
     },
     {
-      path: "copy-collection",
-      element: <CopyCollection />,
+      path: "rest-api-collector",
+      element: <RESTAPICollector />,
     },
   ]);
 }

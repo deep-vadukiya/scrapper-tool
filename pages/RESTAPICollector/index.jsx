@@ -16,7 +16,7 @@ import ExcelExport from "../../components/ExcelExport";
 
 // ----------------------------------------------
 
-export default function CopyCollection() {
+export default function RESTAPICollector() {
   const retrivableRecordOnEachAPI = 100;
   const [totalRecords, setTotalRecords] = useState(0);
   const [lastRecordContactDate, setLastRecordContactDate] = useState(null);
