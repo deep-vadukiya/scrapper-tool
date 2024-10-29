@@ -10,10 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "express": "^4.21.1",
     "idb": "^8.0.0",
+    "moment-timezone": "^0.5.46",
+    "puppeteer": "^23.6.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
+    "tree-kill": "^1.2.2",
+    "vite-plugin-commonjs": "^0.10.3",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
